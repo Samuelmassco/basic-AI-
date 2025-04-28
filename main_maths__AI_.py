@@ -1,0 +1,605 @@
+# Ce fichier va nous aider à prendre des notes pour le cours de maths pour l'IA
+
+# Importation des librairies essentielles
+import pandas as pd  # Librairie pour la manipulation et l'analyse de données tabulaires
+import numpy as np  # Librairie pour le calcul numérique, notamment les tableaux multidimensionnels
+import sklearn  # Librairie pour l'apprentissage automatique (machine learning)
+from sklearn import datasets  # Module de sklearn contenant des jeux de données pour l'apprentissage
+from sklearn.preprocessing import LabelEncoder  # Classe pour encoder les étiquettes catégorielles en valeurs numériques
+import matplotlib  # Librairie de base pour la création de graphiques
+import matplotlib.pyplot as plt  # Module de matplotlib pour la création de graphiques
+from IPython.display import display  # Fonction pour afficher des objets de manière formatée dans IPython et Jupyter
+from IPython.display import Image  # Pour importer des images (potentiellement pour des explications visuelles)
+
+
+
+# Définition d'une fonction pour explorer les bases de NumPy et Pandas
+def intro_numpy():
+    # Création d'un tableau NumPy de 10 nombres flottants aléatoires entre 0 et 1
+    x = np.random.rand(10)
+
+    # Création d'une Series Pandas (tableau unidimensionnel étiqueté) à partir du tableau NumPy 'x'
+    # Les indices sont nommés 'index1' à 'index10', et la Series est nommée 'my_series1'
+    s1 = pd.Series(x, index=[f'index{i}' for i in range(1,11)], name='my_series1')
+    # Création d'un dictionnaire Python simple
+    d = {'Age':30, 'Height':185, 'Weight':90} # Rappel : un dictionnaire est une collection de paires clé-valeur
+    # Création d'un autre dictionnaire Python contenant des tableaux NumPy aléatoires
+    D= {'Float_random': np.random.rand(10), 'Integer_random': np.random.permutation(10)}
+    # Création d'un DataFrame Pandas (tableau bidimensionnel étiqueté) à partir du dictionnaire 'D'
+    # Un DataFrame est idéal pour représenter des données tabulaires avec des colonnes de différents types
+    df1d = pd.DataFrame(D) # Pour un affichage plus structuré des données
+    # Création d'un tableau NumPy bidimensionnel de 10 lignes et 5 colonnes de nombres flottants aléatoires
+    # Peut être interprété comme une matrice de 10 observations (lignes) et 5 caractéristiques (colonnes)
+    X = np.random.rand(10, 5)
+    # Création d'un DataFrame Pandas à partir du tableau NumPy 'X'
+    # Les indices des lignes vont de 1 à 10, et les noms des colonnes sont 'column_1' à 'column_5'
+    df1 = pd.DataFrame(X, index=range(1, X.shape[0] + 1), columns=[f'column_{i}' for i in range(1, X.shape[1] + 1)])
+    # Sélection et affichage de la deuxième colonne du DataFrame 'df1'
+    colone_2=df1['column_2']
+    # Ajout d'une nouvelle colonne nommée 'column_6' au DataFrame 'df1', remplie de 10 nombres flottants aléatoires
+    df1['column_6'] = np.random.rand(10) # Pour modifier ou ajouter une colonne existante
+    # Affichage des 3 premières lignes du DataFrame 'df1'
+    df1.head(3) # Permet d'avoir un aperçu rapide des premières données
+    # Affichage des 2 dernières lignes du DataFrame 'df1'
+    df1.tail(2) # Permet de vérifier les dernières entrées du DataFrame
+    # df1.info() # Fournit des informations sur le DataFrame, comme le type de données et le nombre de valeurs non nulles
+
+    # Analyse statistique et opérations sur les valeurs du DataFrame
+    print(df1.describe()) # Calcule et affiche des statistiques descriptives pour chaque colonne numérique
+                             # (moyenne, écart-type, minimum, maximum, quartiles, etc.)
+    # Exportation du DataFrame 'df1' vers un fichier CSV
+    # Seules les colonnes 'column_1', 'column_5' et 'column_2' sont exportées
+    # La colonne d'index est nommée 'ID' dans le fichier CSV
+    df1.to_csv('df1.csv', columns=['column_1', 'column_5', 'column_2'], index_label='ID')
+    # Permet de sauvegarder les données pour une utilisation ultérieure ou pour le partage
+    # Sauvegarde du DataFrame 'df1' au format pickle (format binaire Python)
+    df1.to_pickle('df1.pkl')
+    # Tri du DataFrame 'df1' en fonction des valeurs de la colonne 'column_1'
+    df1_plot = df1.sort_values('column_1')
+    # Création d'un graphique linéaire montrant l'évolution de 'column_6' et 'column_3' en fonction de 'column_1'
+    df1_plot.plot('column_1', ['column_6', 'column_3'], figsize=(12, 8))
+    # Création d'un nuage de points (scatter plot)
+    # L'axe des x est 'column_2', l'axe des y est 'column_5', la couleur des points est déterminée par les valeurs de 'column_3'
+    # La palette de couleurs utilisée est 'autumn', et la taille de la figure est de 12x8 pouces
+    df1.plot.scatter(x='column_2', y='column_5', c='column_3', colormap='autumn', figsize=(12, 8))
+
+    # Lecture du fichier CSV 'df1.csv' créé précédemment
+    pd.read_csv('df1.csv') # Permet de charger les données sauvegardées
+    # Lecture du fichier CSV 'df1.csv' en spécifiant les colonnes à utiliser ('ID', 'column_1', 'column_2')
+    # La colonne 'ID' est définie comme l'index du DataFrame résultant
+    pd.read_csv('df1.csv', usecols=['ID', 'column_1', 'column_2'], index_col='ID') # Lecture plus efficace et structurée
+    # Lecture du fichier pickle 'df1.pkl'
+    pd.read_pickle('df1.pkl')
+    # Concaténation (fusion) du DataFrame 'df1' avec une version réinitialisée de son index
+    # 'df1.reset_index()' crée un nouveau DataFrame avec un index numérique par défaut et l'ancien index comme une colonne
+    # 'axis=1' spécifie que la concaténation doit se faire horizontalement (ajout de colonnes)
+    pd.concat([df1, df1.reset_index()], axis=1)
+
+# Définition d'une fonction pour explorer un jeu de données avec Pandas
+def numpy_2():
+    # Chargement du jeu de données Iris depuis scikit-learn sous forme de DataFrame Pandas
+    iris=datasets.load_iris(as_frame=True)
+    # Récupération du chemin du fichier CSV d'origine du jeu de données Iris
+    path_iris = iris['filename']
+    display(path_iris) # Affichage du chemin du fichier
+    display(iris['data']) # Affichage des données (les caractéristiques des fleurs)
+    display(iris['feature_names']) # Affichage des noms des colonnes (les noms des caractéristiques)
+    display(iris['target']) # Affichage des étiquettes (les espèces d'iris sous forme numérique)
+    # Création d'un DataFrame Pandas combinant les données et les étiquettes
+    iris_df = iris['frame']
+    # Maintenant, 'iris_df' est un ensemble de données plus complet et pratique pour l'analyse
+    # Création d'une copie du DataFrame 'iris_df' pour éviter de modifier l'original lors des manipulations
+    iris_df_copy = iris_df.copy()
+    # Ajout d'une nouvelle colonne 'target_names' au DataFrame copié
+    # Cette colonne contient le nom de l'espèce d'iris correspondant à chaque valeur numérique de la colonne 'target'
+    iris_df_copy['target_names'] = [iris['target_names'][t] for t in iris_df_copy['target']]
+    display(iris_df_copy) # Affichage du DataFrame avec la nouvelle colonne des noms d'espèces
+    # Visualisation du jeu de données à l'aide d'une boîte à moustaches (boxplot) pour chaque caractéristique
+    iris['data'].boxplot(figsize=(12, 8)) # Permet de visualiser la distribution des valeurs pour chaque caractéristique
+
+    # Conversion du type de données de la colonne 'target_names' en 'category' (type de données optimisé pour les variables catégorielles)
+    iris_df_copy = iris_df_copy.astype({'target_names': 'category'})
+    # Création d'une instance de la classe LabelEncoder
+    labelenc = LabelEncoder()
+    # Entraînement du LabelEncoder sur les noms des espèces d'iris (pour apprendre les correspondances)
+    labelenc.fit(['setosa', 'versicolor', 'virginica'])
+    # Création d'une autre copie du DataFrame
+    iris_df_copy2 = iris_df_copy.copy()
+    # Transformation des noms des espèces dans la colonne 'target_names' en valeurs numériques encodées
+    iris_df_copy2['target_names'] = labelenc.transform(iris_df_copy2['target_names'].values)
+
+    # Renommage de la colonne 'target_names' en 'target_labelenc' pour indiquer qu'elle contient des labels encodés
+    iris_df_copy2 = iris_df_copy2.rename(columns={'target_names': 'target_labelenc'})
+
+    # Mélange aléatoire de l'ordre des classes apprises par le LabelEncoder
+    labelenc.classes_ = labelenc.classes_[np.random.permutation(len(labelenc.classes_))]
+    display(labelenc.classes_) # Affichage de l'ordre mélangé des classes
+
+    # Création de variables indicatrices (dummy variables) pour la colonne catégorielle 'target_names' du DataFrame 'iris_df_copy'
+    # Chaque catégorie devient une nouvelle colonne avec des valeurs binaires (0 ou 1) indiquant la présence de cette catégorie
+    pd.get_dummies(iris_df_copy, dtype='int') # Le 'dtype='int'' spécifie que les valeurs binaires doivent être des entiers
+
+
+
+def lin_algebra():
+    # help(np.array) # Aide pour obtenir des explications sur la fonction np.array, utile pour comprendre comment créer des tableaux NumPy
+    # Attention au type de données des éléments du tableau NumPy
+    v1 = np.array(np.random.rand())  # Création d'un tableau NumPy scalaire (0-dimensionnel) contenant un nombre aléatoire entre 0 et 1
+    v2 = np.random.rand(4)  # Création d'un tableau NumPy unidimensionnel (vecteur) de 4 éléments aléatoires entre 0 et 1
+    v3 = np.random.rand(3, 4)  # Création d'un tableau NumPy bidimensionnel (matrice) de 3 lignes et 4 colonnes de nombres aléatoires
+
+    # Boucle pour afficher la forme (dimensions) de chaque tableau créé
+    for v in [v1, v2, v3]:
+        print(f'La forme de {v} est {v.shape}')
+        print('')
+
+    # Exemple d'opérations d'algèbre linéaire avec NumPy
+    print(f'Produit scalaire de v2 avec lui-même: {np.matmul(v2, v2)}') # Calcul du produit scalaire (dot product) du vecteur v2 avec lui-même
+    print('')
+    print(f'Produit matriciel de v3 avec sa transposée:') # Calcul du produit matriciel de la matrice v3 avec sa transposée (lignes deviennent colonnes et vice versa)
+    print(np.matmul(v3, v3.T))
+    print('')
+    print(f'Produit matriciel de v3 avec sa transposée, en utilisant l\'opérateur @:') # Même opération que ci-dessus, mais en utilisant l'opérateur '@' (syntaxe plus récente pour le produit matriciel)
+    print(v3 @ v3.T)
+    print('')
+    print(f'Produit matriciel de v3 avec v2 (redimensionné en vecteur colonne), en utilisant l\'opérateur @:')
+    # Redimensionnement du vecteur v2 en un vecteur colonne (4 lignes, 1 colonne) avant de le multiplier par la matrice v3
+    print(v3 @ v2.reshape((4, 1)))
+
+import numpy as np
+from sklearn.decomposition import PCA
+
+def PCA_simple():
+    """
+    Applique l'Analyse en Composantes Principales (PCA) sur des données aléatoires.
+
+    Cette fonction génère une matrice de données aléatoires, applique PCA pour réduire
+    la dimensionalité, puis tente de reconstruire les données à partir de la
+    représentation de faible dimension. Le résultat principal n'est pas visualisé
+    mais stocké dans des variables.
+    """
+    # Définition des dimensions des données
+    N = 1000  # Nombre d'échantillons (lignes)
+    n = 100   # Nombre de caractéristiques initiales (colonnes)
+    m = 7     # Nombre de composantes principales à conserver
+
+    # Génération d'une matrice de données aléatoires de taille N x n
+    X = np.random.rand(N, n)
+
+    # Initialisation de l'objet PCA avec le nombre de composantes souhaité
+    pca = PCA(n_components=m)
+
+    # Entraînement du modèle PCA sur les données X.
+    # Cette étape calcule les composantes principales.
+    pca.fit(X)
+
+    # Transformation des données X en utilisant les composantes principales apprises.
+    # Ym contient la représentation des données dans l'espace de faible dimension (N x m).
+    Ym = pca.transform(X)
+
+    # Tentative de reconstruction des données à partir de la représentation de faible dimension.
+    # Xapp est la version reconstruite des données (N x n), mais avec une perte d'information.
+    Xapp = pca.inverse_transform(Ym)
+
+    # Note: Les résultats (pca, Ym, Xapp) ne sont pas explicitement affichés ici.
+    # Pour une analyse plus poussée, on examinerait la variance expliquée,
+    # les composantes principales elles-mêmes, ou on visualiserait Ym si m <= 3.
+
+
+
+
+import pandas as pd
+import numpy as np
+from sklearn import datasets
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from IPython.display import display
+from ipywidgets import interact
+
+def PCA_analysis():
+    """
+    Effectue une analyse PCA sur les jeux de données Iris et Wine de scikit-learn.
+
+    Cette fonction charge les deux jeux de données, effectue la PCA avec et sans
+    standardisation pour Wine, visualise la variance expliquée et les projections
+    des données dans l'espace des composantes principales. Elle inclut également
+    un graphique interactif pour explorer la projection 2D d'Iris.
+    """
+    # Chargement des jeux de données Iris et Wine sous forme de DataFrames Pandas
+    iris_dataset = datasets.load_iris(as_frame=True)
+    wine_dataset = datasets.load_wine(as_frame=True)
+
+    # Combinaison des caractéristiques (data) et des étiquettes (target) en un seul DataFrame
+    iris = pd.concat([iris_dataset['data'], iris_dataset['target']], axis=1)
+    wine = pd.concat([wine_dataset['data'], wine_dataset['target']], axis=1)
+
+    # Affichage des premières lignes des DataFrames et de la description des jeux de données
+    display(iris.head())
+    print("\nDescription du jeu de données IRIS:")
+    print(iris_dataset['DESCR'])
+    display(wine.head())
+    print("\nDescription du jeu de données WINE:")
+    print(wine_dataset['DESCR'])
+
+    # Séparation des caractéristiques (X) et de la variable cible (y)
+    X_iris = iris.iloc[:, :-1]  # Sélection de toutes les colonnes sauf la dernière (target) pour Iris
+    X_wine = wine.iloc[:, :-1]  # Sélection de toutes les colonnes sauf la dernière (target) pour Wine
+
+    # Standardisation des données Wine
+    # La standardisation est importante pour la PCA car elle assure que toutes les
+    # caractéristiques contribuent de manière égale à l'analyse.
+    scaler_wine = StandardScaler()
+    scaler_wine.fit(X_wine.values)
+    X_wine_scaled = scaler_wine.transform(X_wine.values)
+
+    # Initialisation des objets PCA
+    pca_iris = PCA()             # PCA pour le jeu de données Iris (sans standardisation ici)
+    pca_wine = PCA()             # PCA pour le jeu de données Wine (sur les données standardisées)
+    pca_wine_nostd = PCA()      # PCA pour le jeu de données Wine (sur les données non standardisées)
+
+    # Entraînement des modèles PCA sur les données correspondantes
+    pca_iris.fit(X_iris.values)
+    pca_wine.fit(X_wine_scaled)
+    pca_wine_nostd.fit(X_wine.values)
+
+    # Visualisation de la variance expliquée par chaque composante principale pour Iris
+    plt.figure()
+    plt.bar(np.arange(pca_iris.n_features_in_), pca_iris.explained_variance_ratio_,
+            bottom=np.insert(np.cumsum(pca_iris.explained_variance_ratio_), 0, 0)[:-1],
+            label='Variance expliquée par chaque PC')
+    plt.bar(np.arange(pca_iris.n_features_in_), np.insert(np.cumsum(pca_iris.explained_variance_ratio_), 0, 0)[:-1],
+            color='b', alpha=0.15, label='Variance cumulée')
+    plt.plot(np.cumsum(pca_iris.explained_variance_ratio_), 'r-', label='Variance cumulée (ligne)')
+    plt.title('IRIS - Variance Expliquée')
+    plt.xticks(ticks=np.arange(pca_iris.n_features_in_),
+               labels=[f'PC{i+1}' for i in range(pca_iris.n_features_in_)])
+    plt.xlabel('Composantes Principales')
+    plt.ylabel('Variance Expliquée (%)')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    # Visualisation de la variance expliquée pour Wine (sans standardisation)
+    plt.figure()
+    plt.bar(np.arange(pca_wine_nostd.n_features_in_), pca_wine_nostd.explained_variance_ratio_,
+            bottom=np.insert(np.cumsum(pca_wine_nostd.explained_variance_ratio_), 0, 0)[:-1],
+            label='Variance expliquée par chaque PC')
+    plt.bar(np.arange(pca_wine_nostd.n_features_in_),
+            np.insert(np.cumsum(pca_wine_nostd.explained_variance_ratio_), 0, 0)[:-1], color='b', alpha=0.15,
+            label='Variance cumulée')
+    plt.plot(np.cumsum(pca_wine_nostd.explained_variance_ratio_), 'r-', label='Variance cumulée (ligne)')
+    plt.title('WINE (SANS STANDARDISATION) - Variance Expliquée')
+    plt.xticks(ticks=np.arange(1, pca_wine_nostd.n_features_in_ + 1),
+               labels=[f'PC{i}' for i in range(1, pca_wine_nostd.n_features_in_ + 1)])
+    plt.xlabel('Composantes Principales')
+    plt.ylabel('Variance Expliquée (%)')
+    plt.ylim([0, 1.1])
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    # Visualisation de la variance expliquée pour Wine (avec standardisation)
+    plt.figure()
+    plt.bar(np.arange(pca_wine.n_features_in_), pca_wine.explained_variance_ratio_,
+            bottom=np.insert(np.cumsum(pca_wine.explained_variance_ratio_), 0, 0)[:-1],
+            label='Variance expliquée par chaque PC')
+    plt.bar(np.arange(pca_wine.n_features_in_), np.insert(np.cumsum(pca_wine.explained_variance_ratio_), 0, 0)[:-1],
+            color='b', alpha=0.15, label='Variance cumulée')
+    plt.plot(np.cumsum(pca_wine.explained_variance_ratio_), 'r-', label='Variance cumulée (ligne)')
+    plt.title('WINE (AVEC STANDARDISATION) - Variance Expliquée')
+    plt.xticks(ticks=np.arange(1, pca_wine.n_features_in_ + 1),
+               labels=[f'PC{i}' for i in range(1, pca_wine.n_features_in_ + 1)])
+    plt.xlabel('Composantes Principales')
+    plt.ylabel('Variance Expliquée (%)')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+    # Application de PCA pour réduire la dimensionalité à 2 composantes pour Iris et 3 pour Wine
+    n_components_iris = 2
+    n_components_wine = 3
+    pca_iris_m = PCA(n_components=n_components_iris)
+    pca_wine_m = PCA(n_components=n_components_wine)
+
+    # Entraînement des modèles PCA réduits
+    pca_iris_m.fit(X_iris.values)
+    pca_wine_m.fit(X_wine_scaled)
+
+    # Transformation des données dans l'espace des composantes principales
+    Y_iris_m = pca_iris_m.transform(X_iris.values)
+    Y_wine_m = pca_wine_m.transform(X_wine_scaled)
+
+    # Graphique de chargement (loading plot) pour Iris (montre la contribution des variables originales aux PC)
+    plt.figure()
+    for i in range(pca_iris_m.n_features_in_):
+        plt.plot([0, pca_iris_m.components_[0, i]], [0, pca_iris_m.components_[1, i]],
+                 label=X_iris.columns[i])
+    plt.scatter(pca_iris_m.components_[0, :], pca_iris_m.components_[1, :], c='k')
+    plt.legend()
+    plt.title('IRIS - GRAPHIQUE DE CHARGEMENT')
+    plt.xlabel('PC1')
+    plt.ylabel('PC2')
+    plt.grid(True)
+    plt.show()
+
+    # Graphique de score (score plot) pour Iris (projection des données sur les 2 premières PC)
+    plt.figure()
+    plt.scatter(Y_iris_m[:, 0], Y_iris_m[:, 1], c=iris['target'].values, cmap='viridis')
+    plt.title('IRIS - GRAPHIQUE DE SCORE')
+    plt.xlabel('PC1')
+    plt.ylabel('PC2')
+    plt.grid(True)
+    plt.colorbar(label='Espèce')
+    plt.show()
+
+    # Graphique de score 3D pour Wine (projection des données sur les 3 premières PC)
+    fig_winescore = plt.figure()
+    ax = fig_winescore.add_subplot(111, projection='3d')
+    scatter = ax.scatter(Y_wine_m[:, 0], Y_wine_m[:, 1], Y_wine_m[:, 2], c=wine['target'].values, cmap='viridis')
+    plt.title('WINE - GRAPHIQUE DE SCORE (3D)')
+    ax.set_xlabel('PC1')
+    ax.set_ylabel('PC2')
+    ax.set_zlabel('PC3')
+    plt.colorbar(scatter, label='Classe de Vin')
+    plt.grid(True)
+    plt.show()
+
+    # Graphique de chargement 3D pour Wine
+    fig_winescore = plt.figure()
+    ax = fig_winescore.add_subplot(111, projection='3d')
+    for i in range(pca_wine_m.n_features_in_):
+        ax.plot([0, pca_wine_m.components_[0, i]], [0, pca_wine_m.components_[1, i]],
+                [0, pca_wine_m.components_[2, i]],
+                label=X_wine.columns[i])
+    ax.scatter(pca_wine_m.components_[0, :], pca_wine_m.components_[1, :], pca_wine_m.components_[2, :], c='k')
+    plt.legend(bbox_to_anchor=(1.05, 1), fontsize='xx-small')
+    plt.title('WINE - GRAPHIQUE DE CHARGEMENT (3D)')
+    ax.set_xlabel('PC1')
+    ax.set_ylabel('PC2')
+    ax.set_zlabel('PC3')
+    plt.grid(True)
+    plt.show()
+
+    # Graphique interactif pour explorer la projection 2D d'Iris
+    def update_plot(coord_PC1, coord_PC2):
+        fig, axs = plt.subplots(2, 2, figsize=(10, 8))
+
+        # Point sélectionné dans le plan des deux premières PC
+        x = coord_PC1
+        y = coord_PC2
+
+        # Affichage du point sélectionné sur le graphique de score d'Iris
+        axs[0, 0].plot(x, y, 'ro', markersize=8, label='Point sélectionné')
+        scatter = axs[0, 0].scatter(Y_iris_m[:, 0], Y_iris_m[:, 1], c=iris['target'].values, cmap='viridis')
+        axs[0, 0].set_xlim(-4, 5)
+        axs[0, 0].set_ylim(-2, 2)
+        axs[0, 0].set_title('Projection d\'Iris (PC1 vs PC2)')
+        axs[0, 0].set_xlabel('PC1')
+        axs[0, 0].set_ylabel('PC2')
+        axs[0, 0].grid(True)
+        axs[0, 0].axhline(0, color='black', linewidth=0.5)
+        axs[0, 0].axvline(0, color='black', linewidth=0.5)
+        axs[0, 0].legend()
+
+        # Barplot montrant la contribution des caractéristiques originales à PC1 pour le point sélectionné
+        axs[1, 0].bar(np.arange(pca_iris_m.n_features_in_), x * pca_iris_m.components_[0, :], color='skyblue')
+        axs[1, 0].set_xticks(ticks=np.arange(pca_iris_m.n_features_in_), labels=X_iris.columns.to_list(), rotation=15, ha='right')
+        axs[1, 0].set_title('Contribution des caractéristiques à PC1')
+        axs[1, 0].set_ylabel('Valeur (PC1 * coord)')
+
+        # Barplot montrant la contribution des caractéristiques originales à PC2 pour le point sélectionné
+        axs[1, 1].bar(np.arange(pca_iris_m.n_features_in_), y * pca_iris_m.components_[1, :], color='lightcoral')
+        axs[1, 1].set_xticks(ticks=np.arange(pca_iris_m.n_features_in_), labels=X_iris.columns.to_list(), rotation=15, ha='right')
+        axs[1, 1].set_title('Contribution des caractéristiques à PC2')
+        axs[1, 1].set_ylabel('Valeur (PC2 * coord)')
+
+        # Barplot montrant la reconstruction approximative du point dans l'espace original
+        reconstructed_point = x * pca_iris_m.components_[0, :] + y * pca_iris_m.components_[1, :] + pca_iris_m.mean_
+        axs[0, 1].bar(np.arange(pca_iris_m.n_features_in_), reconstructed_point, color='lightgreen')
+        axs[0, 1].set_xticks(ticks=np.arange(pca_iris_m.n_features_in_), labels=X_iris.columns.to_list(), rotation=15, ha='right')
+        axs[0, 1].set_ylim(0, X_iris.values.max() * 1.5)
+        axs[0, 1].set_title('Reconstruction Approximative')
+        axs[0, 1].set_ylabel('Valeur de la caractéristique')
+
+        plt.tight_layout()
+        plt.show()
+
+    # Création des curseurs interactifs pour explorer le plan des deux premières PC d'Iris
+    interact(update_plot, coord_PC1=(-4, 5, 0.1), coord_PC2=(-2, 2, 0.1))
+
+
+
+
+import pip
+import pandas as pd
+import numpy as np
+from sklearn import datasets
+import sklearn
+import sklearn.datasets as datasets
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from IPython.display import display
+
+
+def perform_dimensionality_reduction_comparison():
+    from FisherDA import MultipleFisherDiscriminantAnalysis as MDA
+    """
+    Applies and compares LDA (Linear Discriminant Analysis), MDA (Multiple Fisher
+    Discriminant Analysis), and PCA (Principal Component Analysis) for dimensionality
+    reduction on the Wine dataset. Visualizes the classification results of LDA
+    and the data projections onto a 2D space.
+    """
+    # Loading the Wine dataset
+    wine_dataset = datasets.load_wine(as_frame=True)
+    wine = pd.concat([wine_dataset['data'], wine_dataset['target']], axis=1)
+
+    # Preparing the dataset: Separating features (X) from the target variable (y)
+    X = wine_dataset['data'].values
+    y = wine_dataset['target'].values
+
+    # Defining the seed for reproducibility and the percentage of data for the test set
+    random_seed = 20210422
+    test_p = 0.45
+
+    # Splitting the dataset into training set and test set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_p, random_state=random_seed, shuffle=True)
+
+    # --- Linear Discriminant Analysis (LDA) ---
+    print("\n--- Linear Discriminant Analysis (LDA) ---")
+    # Initialization of the LDA model
+    lda = LDA()
+    display(lda) # Displays the parameters of the LDA object
+
+    # Training the LDA model on the training set
+    lda.fit(X_train, y_train)
+
+    # Calculating the predicted classes for the test set data
+    y_pred = lda.predict(X_test)
+
+    # Calculating the probability of belonging to each class for the test set data
+    y_pred_proba = lda.predict_proba(X_test)
+
+    # Creating a DataFrame to visualize the predictions and probabilities
+    y_pred_df = pd.DataFrame({'Pred. Class': y_pred,
+                              'P(Class 0) - %': np.round(y_pred_proba[:, 0] * 100, decimals=2),
+                              'P(Class 1) - %': np.round(y_pred_proba[:, 1] * 100, decimals=2),
+                              'P(Class 2) - %': np.round(y_pred_proba[:, 2] * 100, decimals=2)})
+
+    # Calculating the prediction accuracy on the training and test sets
+    train_accuracy = lda.score(X_train, y_train)
+    test_accuracy = lda.score(X_test, y_test)
+
+    # Creating a DataFrame to visualize the accuracies
+    scores_dict = {'Training Set': [train_accuracy], 'Test Set': [test_accuracy]}
+    scores = pd.DataFrame(scores_dict, index=['Accuracy'])
+
+    display(scores)
+    display(y_pred_df.head()) # Displays the first few rows of the predictions DataFrame
+
+    # --- Multiple Fisher Discriminant Analysis (MDA) ---
+    print("\n--- Multiple Fisher Discriminant Analysis (MDA) ---")
+    # Initialization of the MDA model for projection onto 2 dimensions (n_components=2)
+    mda = MDA(n_components=2)
+
+    # Training the MDA model on the training set and transforming the data
+    Zmda = mda.fit_transform(X_train, y_train)
+
+    # --- Principal Component Analysis (PCA) ---
+    print("\n--- Principal Component Analysis (PCA) ---")
+    # Initialization of the PCA model for projection onto 2 dimensions (n_components=2)
+    pca = PCA(n_components=2)
+
+    # Initialization of the StandardScaler to standardize the data before PCA
+    pca_scaler = StandardScaler()
+
+    # Fitting the StandardScaler to the training data and transforming both training and test sets
+    X_train_scaled = pca_scaler.fit_transform(X_train)
+    X_test_scaled = pca_scaler.transform(X_test)
+
+    # Training the PCA model on the standardized training data and transforming
+    Zpca_train = pca.fit_transform(X_train_scaled)
+    Zpca_test = pca.transform(X_test_scaled) # Transforming the test set with the PCA fitted on the training set
+
+    # Transforming the training data with LDA for visualization
+    Zlda_train = lda.transform(X_train)
+    Zlda_test = lda.transform(X_test)
+
+    # --- Comparison plot of the projections ---
+    print("\n--- Visualization of the Projections ---")
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+
+    # Scatter plot for LDA
+    scatter_lda = axs[0].scatter(Zlda_train[:, 0], Zlda_train[:, 1], c=y_train, alpha=0.5, cmap='viridis')
+    axs[0].set_title('LDA (Training Data)')
+    axs[0].set_xlabel('Discriminant Component 1')
+    axs[0].set_ylabel('Discriminant Component 2')
+    axs[0].legend(*scatter_lda.legend_elements(), title="Classes")
+
+    # Scatter plot for MDA
+    scatter_mda = axs[1].scatter(Zmda[:, 0], Zmda[:, 1], c=y_train, alpha=0.5, cmap='viridis')
+    axs[1].set_title('MDA (Training Data)')
+    axs[1].set_xlabel('Discriminant Component 1')
+    axs[1].set_ylabel('Discriminant Component 2')
+    axs[1].legend(*scatter_mda.legend_elements(), title="Classes")
+
+    # Scatter plot for PCA
+    scatter_pca = axs[2].scatter(Zpca_train[:, 0], Zpca_train[:, 1], c=y_train, alpha=0.5, cmap='viridis')
+    axs[2].set_title('PCA (Training Data)')
+    axs[2].set_xlabel('Principal Component 1')
+    axs[2].set_ylabel('Principal Component 2')
+    axs[2].legend(*scatter_pca.legend_elements(), title="Classes")
+
+    plt.tight_layout()
+    plt.show()
+
+    # --- Visualization of the space partitioning via LDA ---
+    print("\n--- Visualization of the Space Partitioning via LDA ---")
+    X_min = wine_dataset['data'].describe().loc['min', :].values
+    X_max = wine_dataset['data'].describe().loc['max', :].values
+    X_range = X_max - X_min
+
+    colors = ['red', 'green', 'blue']
+    y_colors_train = [colors[i] for i in y_train]
+    y_colors_test = [colors[i] for i in y_test]
+
+    n_samples = 2000
+    # Generating random points in the feature space
+    Xrand = X_min + X_range * np.random.rand(n_samples, X_range.size)
+    # Predicting classes and probabilities for the random points
+    yrand_pred = lda.predict(Xrand)
+    yrand_proba = lda.predict_proba(Xrand)
+    # Projecting the random points into the LDA space
+    Zrand = lda.transform(Xrand)
+
+    yrand_pred_colors = [colors[i] for i in yrand_pred]
+
+    fig1 = plt.figure(figsize=(8, 6))
+    plt.scatter(Zlda_train[:, 0], Zlda_train[:, 1], c=y_colors_train, alpha=0.35, label='Training Data')
+    plt.scatter(Zlda_test[:, 0], Zlda_test[:, 1], c=y_colors_test, alpha=0.65, marker='o', edgecolors='k', label='Test Data')
+    plt.scatter(Zrand[:, 0], Zrand[:, 1], c=yrand_pred_colors, alpha=0.15, marker='x', label='LDA Predictions')
+    plt.title('Space Partitioning via LDA (Projection onto $\mathbb{R}^2$)')
+    plt.xlabel('Discriminant Component 1')
+    plt.ylabel('Discriminant Component 2')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    fig2 = plt.figure(figsize=(8, 6))
+    plt.scatter(Zrand[:, 0], Zrand[:, 1], c=np.max(yrand_proba, axis=1), cmap='viridis', alpha=0.25)
+    plt.colorbar(label='Max Probability')
+    plt.title('Space Partitioning via LDA (Projection onto $\mathbb{R}^2$; Probability)')
+    plt.xlabel('Discriminant Component 1')
+    plt.ylabel('Discriminant Component 2')
+    plt.grid(True)
+    plt.show()
+
+
+
+
+
+
+def MLP():
+    pass
+
+
+
+
+
+
+
+
+def main():
+    MLP()
+
+
+
+
+# Condition pour exécuter la fonction main() uniquement lorsque le script est exécuté directement (et non importé comme un module)
+if __name__ == '__main__':
+    main()
