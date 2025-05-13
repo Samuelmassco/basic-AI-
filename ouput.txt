@@ -1,0 +1,261 @@
+C:\Users\coriat\PycharmProjects\politoproject\venv\Scripts\python.exe "C:\Users\coriat\PycharmProjects\politoproject\maths for AI\project MAI__2025.py"
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 569 entries, 0 to 568
+Data columns (total 32 columns):
+ #   Column                   Non-Null Count  Dtype
+---  ------                   --------------  -----
+ 0   id                       569 non-null    int64
+ 1   diagnosis                569 non-null    object
+ 2   radius_mean              569 non-null    float64
+ 3   texture_mean             569 non-null    float64
+ 4   perimeter_mean           569 non-null    float64
+ 5   area_mean                569 non-null    float64
+ 6   smoothness_mean          569 non-null    float64
+ 7   compactness_mean         569 non-null    float64
+ 8   concavity_mean           569 non-null    float64
+ 9   concave_points_mean      569 non-null    float64
+ 10  symmetry_mean            569 non-null    float64
+ 11  fractal_dimension_mean   569 non-null    float64
+ 12  radius_se                569 non-null    float64
+ 13  texture_se               569 non-null    float64
+ 14  perimeter_se             569 non-null    float64
+ 15  area_se                  569 non-null    float64
+ 16  smoothness_se            569 non-null    float64
+ 17  compactness_se           569 non-null    float64
+ 18  concavity_se             569 non-null    float64
+ 19  concave_points_se        569 non-null    float64
+ 20  symmetry_se              569 non-null    float64
+ 21  fractal_dimension_se     569 non-null    float64
+ 22  radius_worst             569 non-null    float64
+ 23  texture_worst            569 non-null    float64
+ 24  perimeter_worst          569 non-null    float64
+ 25  area_worst               569 non-null    float64
+ 26  smoothness_worst         569 non-null    float64
+ 27  compactness_worst        569 non-null    float64
+ 28  concavity_worst          569 non-null    float64
+ 29  concave_points_worst     569 non-null    float64
+ 30  symmetry_worst           569 non-null    float64
+ 31  fractal_dimension_worst  569 non-null    float64
+dtypes: float64(30), int64(1), object(1)
+memory usage: 142.4+ KB
+None
+         id diagnosis  ...  symmetry_worst  fractal_dimension_worst
+0    842302         M  ...          0.4601                  0.11890
+1    842517         M  ...          0.2750                  0.08902
+2  84300903         M  ...          0.3613                  0.08758
+3  84348301         M  ...          0.6638                  0.17300
+4  84358402         M  ...          0.2364                  0.07678
+
+[5 rows x 32 columns]
+ Healthy patients (B): 357
+ Sick patients (M): 212
+Top 10 attributes most correlated with diagnosis (absolute values):
+
+concave_points_worst    0.793566
+perimeter_worst         0.782914
+concave_points_mean     0.776614
+radius_worst            0.776454
+perimeter_mean          0.742636
+area_worst              0.733825
+radius_mean             0.730029
+area_mean               0.708984
+concavity_mean          0.696360
+concavity_worst         0.659610
+Name: diagnosis_encoded, dtype: float64
+
+ Variance explained by each principal component:
+ [4.42720256e-01 1.89711820e-01 9.39316326e-02 6.60213492e-02
+ 5.49576849e-02 4.02452204e-02 2.25073371e-02 1.58872380e-02
+ 1.38964937e-02 1.16897819e-02 9.79718988e-03 8.70537901e-03
+ 8.04524987e-03 5.23365745e-03 3.13783217e-03 2.66209337e-03
+ 1.97996793e-03 1.75395945e-03 1.64925306e-03 1.03864675e-03
+ 9.99096464e-04 9.14646751e-04 8.11361259e-04 6.01833567e-04
+ 5.16042379e-04 2.72587995e-04 2.30015463e-04 5.29779290e-05
+ 2.49601032e-05 4.43482743e-06]
+
+ Number of principal components needed to explain 95% of the variance: 10
+
+ Data dimensions after applying PCA: (569, 10)
+
+ Preview of the DataFrame with principal components:
+    principal_component_1  ...  diagnosis
+0               9.192837  ...          M
+1               2.387802  ...          M
+2               5.733896  ...          M
+3               7.122953  ...          M
+4               3.935302  ...          M
+
+[5 rows x 11 columns]
+
+ Data dimensions after PCA (3 components): (569, 3)
+
+ Preview of the DataFrame with 3 principal components:
+    principal_component_1  ...  diagnosis
+0               9.192837  ...          M
+1               2.387802  ...          M
+2               5.733896  ...          M
+3               7.122953  ...          M
+4               3.935302  ...          M
+
+[5 rows x 4 columns]
+C:\Users\coriat\PycharmProjects\politoproject\venv\lib\site-packages\matplotlib\collections.py:1109: UserWarning: Collection without array used. Make sure to specify the values to be colormapped via the `c` argument.
+  warnings.warn("Collection without array used. Make sure to "
+
+ Training data dimensions after LDA: (398, 1)
+ Test data dimensions after LDA: (171, 1)
+
+ Accuracy of logistic regression model on LDA components: 0.9591
+
+Coefficients of the linear discriminant function:
+ [[-9.40848101 -0.63623676  8.56807079  0.68030965  0.50749153 -5.21844303
+   0.50574899  4.88775906 -0.16737734  0.59974942  2.59436887 -0.8022286
+   0.15380636 -1.57252339  1.43799331 -0.79874335 -2.44833379  2.37940932
+  -0.27721605  0.05011668 16.90321475  2.37079626 -5.01181516 -8.96341406
+  -0.57927775  2.56622573  3.39605571 -2.76182678  1.24233772  0.29023539]]
+ SVM accuracy: 0.9766
+
+ Classification report:
+               precision    recall  f1-score   support
+
+           0       0.98      0.98      0.98       108
+           1       0.97      0.97      0.97        63
+
+    accuracy                           0.98       171
+   macro avg       0.97      0.97      0.97       171
+weighted avg       0.98      0.98      0.98       171
+
+ Confusion matrix:
+ [[106   2]
+ [  2  61]]
+Fitting 5 folds for each of 18 candidates, totalling 90 fits
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.3s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.3s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.001, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(50,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.0001, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.2s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=constant, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100,), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.1s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+[CV] END alpha=0.01, early_stopping=True, hidden_layer_sizes=(100, 50), learning_rate=adaptive, max_iter=300, n_iter_no_change=10, validation_fraction=0.15; total time=   0.0s
+Best hyperparameters: {'alpha': 0.0001, 'early_stopping': True, 'hidden_layer_sizes': (50,), 'learning_rate': 'constant', 'max_iter': 300, 'n_iter_no_change': 10, 'validation_fraction': 0.15}
+
+Classification report:
+              precision    recall  f1-score   support
+
+   malignant       0.91      0.95      0.93        42
+      benign       0.97      0.94      0.96        72
+
+    accuracy                           0.95       114
+   macro avg       0.94      0.95      0.94       114
+weighted avg       0.95      0.95      0.95       114
+
+Confusion matrix:
+ [[40  2]
+ [ 4 68]]
+F1-score: 0.9440
+Precision: 0.9403
+Recall: 0.9484
+
+🧪 Final evaluation of the MLP on the test set:
+Accuracy: 0.9473684210526315
+F1-score (macro): 0.9439895185063871
+Recall (macro): 0.9484126984126984
+Precision (macro): 0.9402597402597402
+
+📊 Confusion matrix:
+ [[40  2]
+ [ 4 68]]
+
+🧾 Classification report:
+               precision    recall  f1-score   support
+
+   malignant       0.91      0.95      0.93        42
+      benign       0.97      0.94      0.96        72
+
+    accuracy                           0.95       114
+   macro avg       0.94      0.95      0.94       114
+weighted avg       0.95      0.95      0.95       114
+
+
+Process finished with exit code 0
