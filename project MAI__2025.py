@@ -1,24 +1,24 @@
-# link to the data set  https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
+# Dataset: https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic
 
-
-
-# Importation des librairies essentielles
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  # Import nécessaire pour la 3D
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
-from sklearn.metrics import accuracy_score
-from sklearn.svm import SVC
+from matplotlib.lines import Line2D
 import pandas as pd
+from pathlib import Path
+
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.decomposition import PCA
-from sklearn.metrics import classification_report, confusion_matrix, f1_score, precision_score, recall_score, make_scorer
-from sklearn.datasets import load_breast_cancer
-from sklearn.metrics import f1_score, precision_score, recall_score
+from sklearn.svm import SVC
+from sklearn.metrics import (
+    accuracy_score, classification_report, confusion_matrix,
+    f1_score, precision_score, recall_score, make_scorer
+)
 
 def main():
-    # 1 we analyse the data set
+    # 1. Data loading and exploration
     columns = [
         "id", "diagnosis",
         "radius_mean", "texture_mean", "perimeter_mean", "area_mean", "smoothness_mean",
@@ -29,13 +29,17 @@ def main():
         "compactness_worst", "concavity_worst", "concave_points_worst", "symmetry_worst", "fractal_dimension_worst"
     ]
 
+    # Get the path to data.csv relative to this script
+    script_dir = Path(__file__).parent
+    csv_path = script_dir / "data.csv"
+
     # Automatic detection of the separator (comma or semicolon); we take advantage of the fact that it's a CSV file.
-    with open("data.csv", "r", encoding="utf-8") as f:
+    with open(str(csv_path), "r", encoding="utf-8") as f:
         first_line = f.readline()
         sep = ',' if first_line.count(',') >= first_line.count(';') else ';'
 
     # Use pandas to load the CSV file (we can then use all pandas functions to explore the dataset)
-    df = pd.read_csv("data.csv", header=None, names=columns, sep=sep)
+    df = pd.read_csv(str(csv_path), header=None, names=columns, sep=sep)
 
     # Display basic information about the dataset
     print(df.info())
@@ -47,7 +51,7 @@ def main():
     print(f" Sick patients (M): {counts.get('M', 0)}")
 
 
-    # 3 Let us now analyze which attributes have the greatest influence on the diagnosis
+    # 2. Correlation analysis: which attributes influence the diagnosis the most
 
     df['diagnosis_encoded'] = df['diagnosis'].map({'B': 0, 'M': 1})#else we would have a probleme doing computation cause there would be some string value
     #we associate the 1 if sick 0 if healthy
@@ -73,18 +77,18 @@ def main():
 
 
 
-    # 4 PCA
+    # 3. PCA (Principal Component Analysis)
 
     # Select features (excluding 'id' and 'diagnosis')
     features = df.drop(columns=['id', 'diagnosis', 'diagnosis_encoded'])
 
     # Standardize the data (important for PCA)
-    scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(features)
+    scaler_pca = StandardScaler()
+    scaled_features = scaler_pca.fit_transform(features)
 
-    # Apply PCA
+    # Apply PCA (fit only — we just need the explained variance ratios)
     pca = PCA()
-    principal_components = pca.fit_transform(scaled_features)
+    pca.fit(scaled_features)
 
     # Explained variance by each principal component
     explained_variance_ratio = pca.explained_variance_ratio_
@@ -119,18 +123,12 @@ def main():
 
     print("\n Preview of the DataFrame with principal components:\n", pca_df.head())
 
-    # 4 PCA (3D Visualization)
+    # 4. PCA (3D Visualization)
     # Each point represents an observation in the dataset, positioned based on its three main components.
     # The color of each point shows whether the tumor was benign (green) or malignant (red).
     # This helps visualize whether the two diagnosis classes are separable in this reduced-dimension space.
 
-    # Select features (excluding 'id' and 'diagnosis')
-    features = df.drop(columns=['id', 'diagnosis', 'diagnosis_encoded'])
-
-    # Standardize the data
-    scaler = StandardScaler()
-    scaled_features = scaler.fit_transform(features)
-
+    # Reuse scaled_features from section 3
     # Apply PCA to obtain 3 components
     n_components_3d = 3
     pca_3d = PCA(n_components=n_components_3d)
@@ -164,20 +162,23 @@ def main():
     ax.set_title('3D PCA Visualization of Breast Cancer Data')
 
     # Create a legend
-    legend1 = ax.legend(*scatter.legend_elements(), title="Diagnosis")
-    ax.add_artist(legend1)
+    legend_elements = [
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='green', markersize=8, label='Benign'),
+        Line2D([0], [0], marker='o', color='w', markerfacecolor='red', markersize=8, label='Malignant')
+    ]
+    ax.legend(handles=legend_elements, title="Diagnosis")
 
     plt.show()
 
 
-    # 5 FDA (Linear Discriminant Analysis)
+    # 5. FDA (Linear Discriminant Analysis)
 
     # Prepare data for LDA
     X = df.drop(columns=['id', 'diagnosis', 'diagnosis_encoded'])
     y = df['diagnosis_encoded']
 
-    # Split the data into training and test sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    # Split the data into training and test sets (consistent split for all models)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
     # Standardize the data (recommended for LDA)
     scaler_lda = StandardScaler()
@@ -194,8 +195,8 @@ def main():
 
     # Analyze class separability in the LDA space (optional)
     plt.figure(figsize=(8, 6))
-    plt.scatter(X_train_lda[y_train == 0], [0] * sum(y_train == 0), label='Benign', color='green', alpha=0.7)
-    plt.scatter(X_train_lda[y_train == 1], [0] * sum(y_train == 1), label='Malignant', color='red', alpha=0.7)
+    plt.scatter(X_train_lda[y_train == 0], [0] * (y_train == 0).sum(), label='Benign', color='green', alpha=0.7)
+    plt.scatter(X_train_lda[y_train == 1], [0] * (y_train == 1).sum(), label='Malignant', color='red', alpha=0.7)
     plt.xlabel('Linear Discriminant Component 1')
     plt.yticks([])
     plt.title('Class separation in LDA space (Training data)')
@@ -204,9 +205,7 @@ def main():
     plt.show()
 
     # Simple evaluation of LDA performance (as a classifier)
-    from sklearn.linear_model import LogisticRegression
-
-    logistic_regression = LogisticRegression()
+    logistic_regression = LogisticRegression(max_iter=1000)
     logistic_regression.fit(X_train_lda, y_train)
     y_pred_lda = logistic_regression.predict(X_test_lda)
     accuracy_lda = accuracy_score(y_test, y_pred_lda)
@@ -216,15 +215,9 @@ def main():
     print("\nCoefficients of the linear discriminant function:\n", lda.coef_)
 
 
-    #6LDA
-    # 7 SVM (Support Vector Machine)
+    # 6. SVM (Support Vector Machine)
 
-    # Reusing the same data as for LDA
-    X = df.drop(columns=['id', 'diagnosis', 'diagnosis_encoded'])
-    y = df['diagnosis_encoded']
-
-    # Train/test split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+    # Reusing the same train/test split as for LDA (already done above)
 
     # Standardization
     scaler_svm = StandardScaler()
@@ -245,12 +238,14 @@ def main():
     print(" Confusion matrix:\n", confusion_matrix(y_test, y_pred_svm))
 
     # 2D visualization with PCA to show the decision boundary
+    # Note: fit PCA only on training data to avoid data leakage
     pca_vis = PCA(n_components=2)
-    X_vis = pca_vis.fit_transform(scaler_svm.fit_transform(X))
+    X_train_vis = pca_vis.fit_transform(X_train_scaled)
+    X_vis = pca_vis.transform(scaler_svm.transform(X))
 
-    # Retrain SVM for visualization on the whole dataset
+    # Retrain SVM for visualization on the projected training data
     svm_model_vis = SVC(kernel='linear')
-    svm_model_vis.fit(X_vis, y)
+    svm_model_vis.fit(X_train_vis, y_train)
 
     plt.figure(figsize=(10, 6))
     scatter = plt.scatter(X_vis[:, 0], X_vis[:, 1], c=y, cmap='bwr', alpha=0.6, edgecolors='k')
@@ -262,27 +257,20 @@ def main():
     plt.tight_layout()
     plt.show()
 
-    # MLP (Multi-Layer Perceptron)
+    # 7. MLP (Multi-Layer Perceptron)
 
-    # Load dataset
-    data = load_breast_cancer()
-    X = data.data
-    y = data.target
-    feature_names = data.feature_names
-    target_names = data.target_names
-
-    # Split the dataset into training+validation and test sets
-    X_trainval, X_test, y_trainval, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    # Reusing the same train/test split as previous models
+    target_names = ['Benign', 'Malignant']
 
     # Standardization
-    scaler = StandardScaler()
-    X_trainval_scaled = scaler.fit_transform(X_trainval)
-    X_test_scaled = scaler.transform(X_test)
+    scaler_mlp = StandardScaler()
+    X_train_mlp_scaled = scaler_mlp.fit_transform(X_train)
+    X_test_mlp_scaled = scaler_mlp.transform(X_test)
 
     # PCA for dimensionality reduction (helps prevent overfitting)
-    pca = PCA(n_components=0.95)  # Keep 95% of variance
-    X_trainval_pca = pca.fit_transform(X_trainval_scaled)
-    X_test_pca = pca.transform(X_test_scaled)
+    pca_mlp = PCA(n_components=0.95)  # Keep 95% of variance
+    X_train_mlp_pca = pca_mlp.fit_transform(X_train_mlp_scaled)
+    X_test_mlp_pca = pca_mlp.transform(X_test_mlp_scaled)
 
     # Parameter grid for hyperparameter tuning
     param_grid = {
@@ -303,33 +291,22 @@ def main():
 
     # Grid search with cross-validation
     grid = GridSearchCV(mlp, param_grid, cv=5, scoring=f1_scorer, verbose=2, n_jobs=-1)
-    grid.fit(X_trainval_pca, y_trainval)
+    grid.fit(X_train_mlp_pca, y_train)
 
     # Best hyperparameters
     print("Best hyperparameters:", grid.best_params_)
 
     # Evaluation on the test set
-    best_model = grid.best_estimator_
-    y_pred = best_model.predict(X_test_pca)
-
-    print("\nClassification report:")
-    print(classification_report(y_test, y_pred, target_names=target_names))
-    print("Confusion matrix:\n", confusion_matrix(y_test, y_pred))
-    print(f"F1-score: {f1_score(y_test, y_pred, average='macro'):.4f}")
-    print(f"Precision: {precision_score(y_test, y_pred, average='macro'):.4f}")
-    print(f"Recall: {recall_score(y_test, y_pred, average='macro'):.4f}")
-
-    # Final evaluation on the test set
     best_mlp = grid.best_estimator_
-    y_pred_test = best_mlp.predict(X_test_pca)
+    y_pred_mlp = best_mlp.predict(X_test_mlp_pca)
 
-    print("\n🧪 Final evaluation of the MLP on the test set:")
-    print("Accuracy:", accuracy_score(y_test, y_pred_test))
-    print("F1-score (macro):", f1_score(y_test, y_pred_test, average='macro'))
-    print("Recall (macro):", recall_score(y_test, y_pred_test, average='macro'))
-    print("Precision (macro):", precision_score(y_test, y_pred_test, average='macro'))
-    print("\n📊 Confusion matrix:\n", confusion_matrix(y_test, y_pred_test))
-    print("\n🧾 Classification report:\n", classification_report(y_test, y_pred_test, target_names=target_names))
+    print("\n Final evaluation of the MLP on the test set:")
+    print(f"Accuracy: {accuracy_score(y_test, y_pred_mlp):.4f}")
+    print(f"F1-score (macro): {f1_score(y_test, y_pred_mlp, average='macro'):.4f}")
+    print(f"Recall (macro): {recall_score(y_test, y_pred_mlp, average='macro'):.4f}")
+    print(f"Precision (macro): {precision_score(y_test, y_pred_mlp, average='macro'):.4f}")
+    print("\nConfusion matrix:\n", confusion_matrix(y_test, y_pred_mlp))
+    print("\nClassification report:\n", classification_report(y_test, y_pred_mlp, target_names=target_names))
 
 
 
